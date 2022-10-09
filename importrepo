@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# This script sources a curated list of tools and utilities within this repo.
+# As such sourcing this will import them into your environment.
