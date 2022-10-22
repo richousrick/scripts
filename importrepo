@@ -6,3 +6,4 @@ SCRIPT_REPO_HOME=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && p
 export SCRIPT_REPO_HOME
 
 source "$SCRIPT_REPO_HOME"/git/import
+source "$SCRIPT_REPO_HOME"/environment/import
