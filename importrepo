@@ -2,3 +2,7 @@
 
 # This script sources a curated list of tools and utilities within this repo.
 # As such sourcing this will import them into your environment.
+SCRIPT_REPO_HOME=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+export SCRIPT_REPO_HOME
+
+source "$SCRIPT_REPO_HOME"/git/import

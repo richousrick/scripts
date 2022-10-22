@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Imports the git module of scripts into the environment
+
+gitDirLoc="$SCRIPT_REPO_HOME"/git
+
+source "$gitDirLoc"/aliases
+
+export PATH=$PATH:"$gitDirLoc":"$gitDirLoc"/utils
