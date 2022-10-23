@@ -55,5 +55,5 @@ def get_branch_name() -> str | None:
                 return match.group(1)
 
 
-
-
+def get_git_username() -> str | None:
+    return validated_run_git_func("git config user.name")
