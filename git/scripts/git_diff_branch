@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+
+# Utility to help review MR's.
+# Mutates the branch to show all changes made in the MR.
+
+upstreamDiff=$(git diff @{upstream})
+
+if [[ -n "$upstreamDiff" ]]; then
+  echo "Current branch is different to remote, creating backup"
+  echo "$upstreamDiff"
+  gitbackup
+fi
+
+mergeBase=$(git merge-base HEAD origin/master)
+
+echo "Resetting head to merge base: $mergeBase"
+git reset --soft "$mergeBase"
