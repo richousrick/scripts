@@ -1,12 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-python -c "
-import importlib.util
-import sys
-spec = importlib.util.spec_from_file_location('module.name', '$1')
-foo = importlib.util.module_from_spec(spec)
-sys.modules['module.name'] = foo
-spec.loader.exec_module(foo)
-print(foo.$2)
-"
+# Runs a python function
+# $1: path to the file with the desired function
+# $2: function to run, with arguement list
+
+run_py_code "$1" "print($2)"

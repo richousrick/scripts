@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+# Runs code in the context of a python file
+# $1: path to the file with the desired function
+# $2: block of python code to run
+
+python -c "
+import importlib.util
+import sys
+spec = importlib.util.spec_from_file_location('anonymous_module', '$1')
+foo = importlib.util.module_from_spec(spec)
+sys.modules['anonymous_module'] = foo
+spec.loader.exec_module(foo)
+from anonymous_module import *
+$2
+"
