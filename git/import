@@ -5,5 +5,3 @@
 gitDirLoc="$SCRIPT_REPO_HOME"/git
 
 source "$gitDirLoc"/aliases
-
-export PATH=$PATH:"$gitDirLoc":"$gitDirLoc"/utils

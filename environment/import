@@ -1,4 +1,0 @@
-#!/bin/bash
-
-envDirLoc="$SCRIPT_REPO_HOME/environment"
-export PATH=$PATH:"$envDirLoc/utils"
