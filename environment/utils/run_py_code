@@ -8,6 +8,7 @@ set -euo pipefail
 python -c "
 import importlib.util
 import sys
+sys.path.insert(0, '$(dirname "$1")')
 spec = importlib.util.spec_from_file_location('anonymous_module', '$1')
 foo = importlib.util.module_from_spec(spec)
 sys.modules['anonymous_module'] = foo
