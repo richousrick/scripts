@@ -1,0 +1,64 @@
+#!/bin/bash
+set -euo pipefail
+
+function validBranchName() {
+  [[ "$(git check-ref-format --branch "$1")" -eq 0 ]]
+}
+
+function validateBranchName() {
+  KNOWS_BRANCH_NAME=false
+  BRANCH_NAME="$(get_branch_name)"
+  # e needs to be unset as the function to check the format returns an error if it is invalid
+  # u needs to be unset as for some reason it keeps complaining the the parameter in validBranchName is unbound,
+  # even though it is not.
+  set +eu
+  if [[ -z "$BRANCH_NAME" ]]; then
+    >&2 echo "Cannot resolve branch name, using fallback 'unknown'"
+    BRANCH_NAME="unknown"
+  elif [[ "$BRANCH_NAME" == "backup/*" ]]; then
+    >&2 echo "Backing up backups is not properly supported"
+    BRANCH_NAME="unknown"
+  elif [[ "$( validBranchName $BRANCH_NAME )" -ne 0 ]]; then
+    TMP_BRANCH_NAME="${BRANCH_NAME%~*}"
+    if [[ "$( validBranchName $TMP_BRANCH_NAME )" -eq 0 ]]; then
+      BRANCH_NAME="$TMP_BRANCH_NAME"
+    else
+      >&2 echo "Resolved branch name ($BRANCH_NAME) contains invalid syntax, setting to unknown"
+      BRANCH_NAME="unknown"
+    fi
+  else
+    KNOWS_BRANCH_NAME=true
+  fi
+  set -eu
+}
+
+validateBranchName
+
+BBN="backup/$BRANCH_NAME/$(date +%Y/%m/%d/%H-%M-%S)"
+git branch "$BBN"
+echo "Backed up commits to $BBN"
+
+if [ -n "$(git status --porcelain=v1 2>/dev/null)" ]; then
+  echo "Uncommitted changes detected"
+  if [ $KNOWS_BRANCH_NAME ]; then
+    # create backup branch
+    git checkout "$BBN"
+
+    # commit all changes
+    git add -A
+    git commit -m"Backed up uncommitted changes"
+
+    # go back to the original branch
+    git checkout "$BRANCH_NAME"
+
+    # copy all unchanged files back
+    git checkout "$BBN" .
+
+    # copying all unchanged files adds them to the staging area, this stages them so they dont get accidentally committed
+    git reset
+  else
+    echo "Unable to resolve reference to branch, Uncommitted changes were not be backed up"
+  fi
+fi
+
+echo "Backed up current branch to $BBN"
