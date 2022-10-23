@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
+# Gets the name of the current branch
+
+run_py_func $SCRIPT_REPO_HOME/git/utils/gitutils.py "get_branch_name()"
